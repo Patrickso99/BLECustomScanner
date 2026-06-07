@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__ide__getDiagnostics",
+      "Bash(./gradlew :androidApp:assembleDebug --console=plain)",
+      "Bash(./gradlew :shared:compileKotlinIosSimulatorArm64 --console=plain)",
+      "Bash(./gradlew :androidApp:assembleDebug :shared:compileKotlinIosSimulatorArm64 --console=plain)"
+    ]
+  }
+}
