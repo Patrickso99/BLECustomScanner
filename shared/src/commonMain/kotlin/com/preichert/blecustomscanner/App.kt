@@ -72,3 +72,18 @@ fun NavGraphBuilder.scannerGraph(
         }
     }
 }
+
+fun NavGraphBuilder.deviceDetailGraph(
+    controller: BleController,
+    onBack: () -> Unit,
+) {
+    composable<DeviceDetailRoute> { backStackEntry ->
+        val route: DeviceDetailRoute = backStackEntry.toRoute()
+        DeviceDetailRoot(
+            onBack = onBack,
+            viewModel = koinViewModel<DeviceDetailViewModel>(
+                parameters = { parametersOf(controller, route.deviceId) },
+            )
+        )
+    }
+}
