@@ -13,6 +13,7 @@ kotlin {
 }
 dependencies {
     implementation(projects.shared)
+    implementation(libs.kermit)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.koin.android)

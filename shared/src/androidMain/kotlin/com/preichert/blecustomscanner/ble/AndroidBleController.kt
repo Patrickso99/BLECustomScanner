@@ -23,6 +23,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.preichert.blecustomscanner.repository.BleDeviceRepository
+import co.touchlab.kermit.Logger
+import com.preichert.blecustomscanner.logger.withTag
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -44,6 +46,7 @@ class AndroidBleController(
     private val repository: BleDeviceRepository,
 ) : BleController {
 
+    private val logger = Logger.withTag(this::class)
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val appContext: Context = context.applicationContext
     private val manager: BluetoothManager? = appContext.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager
@@ -173,6 +176,7 @@ class AndroidBleController(
     }
 
     override fun requestPermissions() {
+        logger.d("Requesting permissions")
         if (hasPermissions()) {
             _permissionGranted.value = true
             arePermissionsAlreadyAsked = true
@@ -256,9 +260,19 @@ class AndroidBleController(
 
     @SuppressLint("MissingPermission")
     override fun startScan() {
-        val scanner = adapter?.bluetoothLeScanner ?: return
-        if (!hasPermissions() || _bluetoothState.value != BluetoothState.Ready) return
-        if (_isScanning.value) return
+        val scanner = adapter?.bluetoothLeScanner ?: run {
+            logger.w("Start scan failed: adapter or scanner null")
+            return
+        }
+        if (!hasPermissions() || _bluetoothState.value != BluetoothState.Ready) {
+            logger.w("Start scan failed: permissions or BT state (state=${_bluetoothState.value})")
+            return
+        }
+        if (_isScanning.value) {
+            logger.d("Start scan called while already scanning")
+            return
+        }
+        logger.i("Starting BLE scan")
         synchronized(discovered) {
             discovered.clear()
             _scannedDevices.value = emptyList()
@@ -270,6 +284,7 @@ class AndroidBleController(
     @SuppressLint("MissingPermission")
     override fun stopScan() {
         if (!_isScanning.value) return
+        logger.i("Stopping BLE scan")
         adapter?.bluetoothLeScanner?.stopScan(scanCallback)
         _isScanning.value = false
     }
@@ -296,14 +311,17 @@ class AndroidBleController(
 
     @SuppressLint("MissingPermission")
     override fun connect(device: BleDevice) {
+        logger.i("Connecting to device: ${device.name} (${device.id})")
         if (!hasPermissions()) {
             _connection.value = DeviceConnection(device = device, error = "Missing Bluetooth permission")
+            logger.e("Connect failed: Missing Bluetooth permission")
             return
         }
         stopScan()
         disconnect()
         val remote = adapter?.getRemoteDevice(device.id) ?: run {
             _connection.value = DeviceConnection(device = device, error = "Device unavailable")
+            logger.e("Connect failed: Device unavailable")
             return
         }
         _connection.value = DeviceConnection(device = device, state = ConnectionState.Connecting)
@@ -312,6 +330,7 @@ class AndroidBleController(
 
     @SuppressLint("MissingPermission")
     override fun disconnect() {
+        logger.i("Disconnecting GATT")
         readQueue.clear()
         readInFlight = false
         gatt?.let {
@@ -324,10 +343,13 @@ class AndroidBleController(
     private val gattCallback = object : android.bluetooth.BluetoothGattCallback() {
         @SuppressLint("MissingPermission")
         override fun onConnectionStateChange(g: BluetoothGatt, status: Int, newState: Int) {
+            logger.d("onConnectionStateChange: status=$status, newState=$newState")
             when (newState) {
                 BluetoothProfile.STATE_CONNECTED -> {
+                    logger.i("Connected to GATT")
                     _connection.update { it.copy(state = ConnectionState.Connected, error = null) }
                     if (!g.requestMtu(517)) {
+                        logger.d("Request MTU failed, starting service discovery")
                         _connection.update { it.copy(state = ConnectionState.DiscoveringServices) }
                         g.discoverServices()
                     }
@@ -335,6 +357,7 @@ class AndroidBleController(
 
                 BluetoothProfile.STATE_DISCONNECTED -> {
                     val failed = status != BluetoothGatt.GATT_SUCCESS
+                    logger.i("Disconnected from GATT (failed=$failed, status=$status)")
                     _connection.update {
                         it.copy(
                             state = if (failed) ConnectionState.Failed else ConnectionState.Disconnected,
@@ -349,13 +372,16 @@ class AndroidBleController(
 
         @SuppressLint("MissingPermission")
         override fun onMtuChanged(g: BluetoothGatt, mtu: Int, status: Int) {
+            logger.d("onMtuChanged: mtu=$mtu, status=$status")
             _connection.update { it.copy(mtu = mtu, state = ConnectionState.DiscoveringServices) }
             g.discoverServices()
         }
 
         @SuppressLint("MissingPermission")
         override fun onServicesDiscovered(g: BluetoothGatt, status: Int) {
+            logger.d("onServicesDiscovered: status=$status")
             if (status != BluetoothGatt.GATT_SUCCESS) {
+                logger.e("Service discovery failed ($status)")
                 _connection.update { it.copy(state = ConnectionState.Failed, error = "Service discovery failed ($status)") }
                 return
             }
@@ -365,6 +391,7 @@ class AndroidBleController(
             g.services.forEach { svc ->
                 svc.characteristics.forEach { ch ->
                     if (ch.properties and BluetoothGattCharacteristic.PROPERTY_READ != 0) {
+                        logger.v("Queuing read for characteristic: ${ch.uuid}")
                         readQueue.add { g.readCharacteristic(ch) }
                     }
                 }
