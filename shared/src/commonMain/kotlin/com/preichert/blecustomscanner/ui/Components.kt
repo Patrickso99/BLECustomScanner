@@ -25,6 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.preichert.blecustomscanner.ble.BleDevice
 import com.preichert.blecustomscanner.ble.BluetoothState
+import com.preichert.blecustomscanner.ui.theme.BleScannerTheme
+import androidx.compose.ui.tooling.preview.Preview
 
 /**
  * Colored banner explaining why scanning is unavailable, plus an optional
@@ -94,6 +96,32 @@ fun StatusBanner(
     }
 }
 
+@Preview
+@Composable
+fun StatusBannerPreview() {
+    BleScannerTheme(darkTheme = false) {
+        StatusBanner(
+            bluetoothState = BluetoothState.PoweredOff,
+            arePermissionGranted = true,
+            onRequestPermission = {},
+            onEnableBluetooth = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+fun StatusBannerDarkPreview() {
+    BleScannerTheme(darkTheme = true) {
+        StatusBanner(
+            bluetoothState = BluetoothState.PoweredOff,
+            arePermissionGranted = true,
+            onRequestPermission = {},
+            onEnableBluetooth = {},
+        )
+    }
+}
+
 /** Centered placeholder shown when a list has no items. */
 @Composable
 fun EmptyState(text: String, modifier: Modifier = Modifier) {
@@ -106,6 +134,22 @@ fun EmptyState(text: String, modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+    }
+}
+
+@Preview
+@Composable
+fun EmptyStatePreview() {
+    BleScannerTheme(darkTheme = false) {
+        EmptyState(text = "No devices found")
+    }
+}
+
+@Preview
+@Composable
+fun EmptyStateDarkPreview() {
+    BleScannerTheme(darkTheme = true) {
+        EmptyState(text = "No devices found")
     }
 }
 
@@ -157,6 +201,38 @@ fun DeviceRow(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun DeviceRowPreview() {
+    BleScannerTheme(darkTheme = false) {
+        DeviceRow(
+            device = BleDevice(
+                id = "00:11:22:33:44:55",
+                name = "Test Device",
+                rssi = -55,
+                bonded = true,
+            ),
+            onClick = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+fun DeviceRowDarkPreview() {
+    BleScannerTheme(darkTheme = true) {
+        DeviceRow(
+            device = BleDevice(
+                id = "00:11:22:33:44:55",
+                name = "Test Device",
+                rssi = -55,
+                bonded = true,
+            ),
+            onClick = {},
+        )
     }
 }
 

@@ -31,6 +31,8 @@ import com.preichert.blecustomscanner.ble.ConnectionState
 import com.preichert.blecustomscanner.ble.GattCharacteristic
 import com.preichert.blecustomscanner.ble.GattNames
 import com.preichert.blecustomscanner.ble.GattService
+import com.preichert.blecustomscanner.ui.theme.BleScannerTheme
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun DeviceDetailRoot(
@@ -231,5 +233,67 @@ private fun CharacteristicRow(ch: GattCharacteristic) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun DeviceDetailScreenPreview() {
+    BleScannerTheme(darkTheme = false) {
+        DeviceDetailScreen(
+            state = DeviceDetailState(
+                device = BleDevice(id = "00:11:22:33:44:55", name = "Test Device", rssi = -55),
+                connection = com.preichert.blecustomscanner.ble.DeviceConnection(
+                    device = BleDevice(id = "00:11:22:33:44:55", name = "Test Device"),
+                    state = ConnectionState.Connected,
+                    services = listOf(
+                        GattService(
+                            uuid = "180D",
+                            name = "Heart Rate",
+                            characteristics = listOf(
+                                GattCharacteristic(
+                                    uuid = "2A37",
+                                    name = "Heart Rate Measurement",
+                                    properties = com.preichert.blecustomscanner.ble.CharacteristicProperties(notify = true),
+                                    value = "75 bpm"
+                                )
+                            )
+                        )
+                    )
+                )
+            ),
+            onBack = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun DeviceDetailScreenDarkPreview() {
+    BleScannerTheme(darkTheme = true) {
+        DeviceDetailScreen(
+            state = DeviceDetailState(
+                device = BleDevice(id = "00:11:22:33:44:55", name = "Test Device", rssi = -55),
+                connection = com.preichert.blecustomscanner.ble.DeviceConnection(
+                    device = BleDevice(id = "00:11:22:33:44:55", name = "Test Device"),
+                    state = ConnectionState.Connected,
+                    services = listOf(
+                        GattService(
+                            uuid = "180D",
+                            name = "Heart Rate",
+                            characteristics = listOf(
+                                GattCharacteristic(
+                                    uuid = "2A37",
+                                    name = "Heart Rate Measurement",
+                                    properties = com.preichert.blecustomscanner.ble.CharacteristicProperties(notify = true),
+                                    value = "75 bpm"
+                                )
+                            )
+                        )
+                    )
+                )
+            ),
+            onBack = {}
+        )
     }
 }

@@ -27,7 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.preichert.blecustomscanner.ble.BleDevice
 import com.preichert.blecustomscanner.ble.BluetoothState
-
+import com.preichert.blecustomscanner.ui.theme.BleScannerTheme
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ScannerRoot(
@@ -154,5 +155,79 @@ fun ScannerScreen(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun ScannerScreenPreview() {
+    BleScannerTheme(darkTheme = false) {
+        ScannerScreen(
+            state = ScannerState(
+                bluetoothState = BluetoothState.Ready,
+                arePermissionGranted = true,
+                isScanning = true,
+                scannedDevices = listOf(
+                    BleDevice(id = "00:11:22:33:44:51", name = "Device 1", rssi = -60),
+                    BleDevice(id = "00:11:22:33:44:52", name = "Device 2", rssi = -80),
+                )
+            ),
+            onAction = {},
+            isDarkMode = false,
+            onToggleTheme = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+fun ScannerScreenDarkPreview() {
+    BleScannerTheme(darkTheme = true) {
+        ScannerScreen(
+            state = ScannerState(
+                bluetoothState = BluetoothState.Ready,
+                arePermissionGranted = true,
+                isScanning = true,
+                scannedDevices = listOf(
+                    BleDevice(id = "00:11:22:33:44:51", name = "Device 1", rssi = -60),
+                    BleDevice(id = "00:11:22:33:44:52", name = "Device 2", rssi = -80),
+                )
+            ),
+            onAction = {},
+            isDarkMode = true,
+            onToggleTheme = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+fun ScannerScreenEmptyPreview() {
+    BleScannerTheme(darkTheme = false) {
+        ScannerScreen(
+            state = ScannerState(
+                bluetoothState = BluetoothState.PoweredOff,
+                arePermissionGranted = true,
+            ),
+            onAction = {},
+            isDarkMode = false,
+            onToggleTheme = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+fun ScannerScreenEmptyDarkPreview() {
+    BleScannerTheme(darkTheme = true) {
+        ScannerScreen(
+            state = ScannerState(
+                bluetoothState = BluetoothState.PoweredOff,
+                arePermissionGranted = true,
+            ),
+            onAction = {},
+            isDarkMode = true,
+            onToggleTheme = {},
+        )
     }
 }
