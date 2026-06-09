@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
         (bleController as? AndroidBleController)?.bind(this)
 
         setContent {
-            App(bleController)
+            App()
         }
     }
 

@@ -22,11 +22,13 @@ import com.preichert.blecustomscanner.ui.ScannerRoot
 import com.preichert.blecustomscanner.ui.ScannerRoute
 import com.preichert.blecustomscanner.ui.ScannerViewModel
 import com.preichert.blecustomscanner.ui.theme.BleScannerTheme
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun App(controller: BleController) {
+fun App() {
+    val controller = koinInject<BleController>()
     val systemDark = isSystemInDarkTheme()
     var isDarkMode by remember { mutableStateOf(systemDark) }
 
