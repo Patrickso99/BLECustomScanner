@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">BLE Custom Scanner</string>
+    <string name="tab_found">Trovati</string>
+    <string name="tab_paired">Associati</string>
+    <string name="scan">Scansiona</string>
+    <string name="stop">Ferma</string>
+    <string name="scanning">Ricerca dispositivi in corso…</string>
+    <string name="no_devices_yet">Nessun dispositivo trovato. Tocca Scansiona per iniziare.</string>
+    <string name="no_paired_devices">Nessun dispositivo associato.</string>
+    <string name="bt_not_ready">Bluetooth non pronto</string>
+    <string name="bt_denied">L\'accesso al Bluetooth è stato negato. Abilitalo nelle Impostazioni per continuare.</string>
+    <string name="open_settings">Apri Impostazioni</string>
+    <string name="bt_permission_required">Il permesso Bluetooth è richiesto per scansionare i dispositivi vicini.</string>
+    <string name="grant_permission">Concedi permesso</string>
+    <string name="bt_powered_off">Il Bluetooth è disattivato. Attivalo per scoprire i dispositivi.</string>
+    <string name="turn_on">Attiva</string>
+    <string name="bt_resetting">Il Bluetooth si sta riavviando, attendere prego…</string>
+    <string name="bt_initializing">Inizializzazione Bluetooth…</string>
+    <string name="paired">Associato</string>
+    <string name="dbm">%1$d dBm</string>
+    <string name="unknown_device">Dispositivo sconosciuto</string>
+    <string name="back">Indietro</string>
+    <string name="no_services_found">Nessun servizio scoperto.</string>
+    <string name="status">Stato</string>
+    <string name="identifier">Identificativo</string>
+    <string name="rssi">RSSI</string>
+    <string name="mtu">MTU</string>
+    <string name="services">Servizi</string>
+    <string name="characteristics">Caratteristiche</string>
+    <string name="manufacturer_data">Dati produttore</string>
+    <string name="properties">Proprietà: %1$s</string>
+    <string name="value">Valore: %1$s</string>
+    <string name="service">Servizio</string>
+    <string name="characteristic">Caratteristica</string>
+</resources>

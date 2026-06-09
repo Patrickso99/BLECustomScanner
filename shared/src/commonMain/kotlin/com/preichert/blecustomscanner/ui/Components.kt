@@ -22,11 +22,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import blecustomscanner.shared.generated.resources.Res
+import blecustomscanner.shared.generated.resources.bt_denied
+import blecustomscanner.shared.generated.resources.bt_initializing
+import blecustomscanner.shared.generated.resources.bt_permission_required
+import blecustomscanner.shared.generated.resources.bt_powered_off
+import blecustomscanner.shared.generated.resources.bt_resetting
+import blecustomscanner.shared.generated.resources.dbm
+import blecustomscanner.shared.generated.resources.grant_permission
+import blecustomscanner.shared.generated.resources.open_settings
+import blecustomscanner.shared.generated.resources.paired
+import blecustomscanner.shared.generated.resources.turn_on
 import com.preichert.blecustomscanner.ble.BleDevice
 import com.preichert.blecustomscanner.ble.BluetoothState
 import com.preichert.blecustomscanner.ui.theme.BleScannerTheme
-import androidx.compose.ui.tooling.preview.Preview
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * Colored banner explaining why scanning is unavailable, plus an optional
@@ -44,27 +56,27 @@ fun StatusBanner(
 
     val info: Info? = when {
         bluetoothState == BluetoothState.Unauthorized -> Info(
-            "Bluetooth access was denied. Enable it in Settings to continue.",
-            "Open Settings",
+            stringResource(Res.string.bt_denied),
+            stringResource(Res.string.open_settings),
             onRequestPermission,
         )
         !arePermissionGranted -> Info(
-            "Bluetooth permission is required to scan for nearby devices.",
-            "Grant permission",
+            stringResource(Res.string.bt_permission_required),
+            stringResource(Res.string.grant_permission),
             onRequestPermission,
         )
         bluetoothState == BluetoothState.PoweredOff -> Info(
-            "Bluetooth is turned off. Turn it on to discover devices.",
-            "Turn on",
+            stringResource(Res.string.bt_powered_off),
+            stringResource(Res.string.turn_on),
             onEnableBluetooth,
         )
         bluetoothState == BluetoothState.Resetting -> Info(
-            "Bluetooth is resetting, please wait…",
+            stringResource(Res.string.bt_resetting),
             null,
         ) {}
 
         bluetoothState == BluetoothState.Unknown -> Info(
-            "Initializing Bluetooth…",
+            stringResource(Res.string.bt_initializing),
             null,
         ) {}
 
@@ -187,7 +199,7 @@ fun DeviceRow(
                 )
                 if (device.bonded) {
                     Text(
-                        "Paired",
+                        stringResource(Res.string.paired),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary,
                     )
@@ -195,7 +207,7 @@ fun DeviceRow(
             }
             if (device.rssi != null) {
                 Text(
-                    "${device.rssi} dBm",
+                    stringResource(Res.string.dbm, device.rssi),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

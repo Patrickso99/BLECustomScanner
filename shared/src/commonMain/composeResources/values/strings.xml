@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">BLE Custom Scanner</string>
+    <string name="tab_found">Found</string>
+    <string name="tab_paired">Paired</string>
+    <string name="scan">Scan</string>
+    <string name="stop">Stop</string>
+    <string name="scanning">Scanning for devices…</string>
+    <string name="no_devices_yet">No devices yet. Tap Scan to start.</string>
+    <string name="no_paired_devices">No paired devices.</string>
+    <string name="bt_not_ready">Bluetooth not ready</string>
+    <string name="bt_denied">Bluetooth access was denied. Enable it in Settings to continue.</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="bt_permission_required">Bluetooth permission is required to scan for nearby devices.</string>
+    <string name="grant_permission">Grant permission</string>
+    <string name="bt_powered_off">Bluetooth is turned off. Turn it on to discover devices.</string>
+    <string name="turn_on">Turn on</string>
+    <string name="bt_resetting">Bluetooth is resetting, please wait…</string>
+    <string name="bt_initializing">Initializing Bluetooth…</string>
+    <string name="paired">Paired</string>
+    <string name="dbm">%1$d dBm</string>
+    <string name="unknown_device">Unknown device</string>
+    <string name="back">Back</string>
+    <string name="no_services_found">No services discovered.</string>
+    <string name="status">Status</string>
+    <string name="identifier">Identifier</string>
+    <string name="rssi">RSSI</string>
+    <string name="mtu">MTU</string>
+    <string name="services">Services</string>
+    <string name="characteristics">Characteristics</string>
+    <string name="manufacturer_data">Manufacturer data</string>
+    <string name="properties">Properties: %1$s</string>
+    <string name="value">Value: %1$s</string>
+    <string name="service">Service</string>
+    <string name="characteristic">Characteristic</string>
+</resources>

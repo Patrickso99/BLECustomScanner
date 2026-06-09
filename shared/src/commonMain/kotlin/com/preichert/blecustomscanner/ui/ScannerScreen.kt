@@ -29,6 +29,17 @@ import com.preichert.blecustomscanner.ble.BleDevice
 import com.preichert.blecustomscanner.ble.BluetoothState
 import com.preichert.blecustomscanner.ui.theme.BleScannerTheme
 import androidx.compose.ui.tooling.preview.Preview
+import blecustomscanner.shared.generated.resources.Res
+import blecustomscanner.shared.generated.resources.app_name
+import blecustomscanner.shared.generated.resources.bt_not_ready
+import blecustomscanner.shared.generated.resources.no_devices_yet
+import blecustomscanner.shared.generated.resources.no_paired_devices
+import blecustomscanner.shared.generated.resources.scan
+import blecustomscanner.shared.generated.resources.scanning
+import blecustomscanner.shared.generated.resources.stop
+import blecustomscanner.shared.generated.resources.tab_found
+import blecustomscanner.shared.generated.resources.tab_paired
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ScannerRoot(
@@ -67,7 +78,7 @@ fun ScannerScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("BLE Custom Scanner") },
+                title = { Text(stringResource(Res.string.app_name)) },
                 actions = {
                     IconButton(onClick = onToggleTheme) {
                         Text(
@@ -100,7 +111,7 @@ fun ScannerScreen(
                                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                             )
                         }
-                        Text(if (state.isScanning) "Stop" else "Scan")
+                        Text(if (state.isScanning) stringResource(Res.string.stop) else stringResource(Res.string.scan))
                     }
                 }
             }
@@ -128,7 +139,11 @@ fun ScannerScreen(
                                 ScannerTab.Found -> state.scannedDevices.size
                                 ScannerTab.Paired -> state.pairedDevices.size
                             }
-                            Text("${entry.title} ($count)")
+                            val title = when (entry) {
+                                ScannerTab.Found -> stringResource(Res.string.tab_found)
+                                ScannerTab.Paired -> stringResource(Res.string.tab_paired)
+                            }
+                            Text("$title ($count)")
                         },
                     )
                 }
@@ -138,10 +153,10 @@ fun ScannerScreen(
             if (devices.isEmpty()) {
                 EmptyState(
                     text = when {
-                        !isReady -> "Bluetooth not ready"
-                        tab == ScannerTab.Found && state.isScanning -> "Scanning for devices…"
-                        tab == ScannerTab.Found -> "No devices yet. Tap Scan to start."
-                        else -> "No paired devices."
+                        !isReady -> stringResource(Res.string.bt_not_ready)
+                        tab == ScannerTab.Found && state.isScanning -> stringResource(Res.string.scanning)
+                        tab == ScannerTab.Found -> stringResource(Res.string.no_devices_yet)
+                        else -> stringResource(Res.string.no_paired_devices)
                     },
                 )
             } else {

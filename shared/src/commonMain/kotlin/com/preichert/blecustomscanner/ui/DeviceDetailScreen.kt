@@ -24,15 +24,32 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import blecustomscanner.shared.generated.resources.Res
+import blecustomscanner.shared.generated.resources.back
+import blecustomscanner.shared.generated.resources.characteristic
+import blecustomscanner.shared.generated.resources.characteristics
+import blecustomscanner.shared.generated.resources.dbm
+import blecustomscanner.shared.generated.resources.identifier
+import blecustomscanner.shared.generated.resources.manufacturer_data
+import blecustomscanner.shared.generated.resources.mtu
+import blecustomscanner.shared.generated.resources.no_services_found
+import blecustomscanner.shared.generated.resources.properties
+import blecustomscanner.shared.generated.resources.rssi
+import blecustomscanner.shared.generated.resources.service
+import blecustomscanner.shared.generated.resources.services
+import blecustomscanner.shared.generated.resources.status
+import blecustomscanner.shared.generated.resources.unknown_device
+import blecustomscanner.shared.generated.resources.value
 import com.preichert.blecustomscanner.ble.BleDevice
 import com.preichert.blecustomscanner.ble.ConnectionState
 import com.preichert.blecustomscanner.ble.GattCharacteristic
 import com.preichert.blecustomscanner.ble.GattNames
 import com.preichert.blecustomscanner.ble.GattService
 import com.preichert.blecustomscanner.ui.theme.BleScannerTheme
-import androidx.compose.ui.tooling.preview.Preview
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun DeviceDetailRoot(
@@ -69,9 +86,9 @@ fun DeviceDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(device?.displayName ?: "Device") },
+                title = { Text(device?.displayName ?: stringResource(Res.string.unknown_device)) },
                 navigationIcon = {
-                    TextButton(onClick = onBack) { Text("Back") }
+                    TextButton(onClick = onBack) { Text(stringResource(Res.string.back)) }
                 },
             )
         },
@@ -99,14 +116,14 @@ fun DeviceDetailScreen(
                 if (connection.services.isEmpty() && !busy) {
                     item {
                         Text(
-                            "No services discovered.",
+                            stringResource(Res.string.no_services_found),
                             Modifier.padding(16.dp),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
 
-                items(connection.services, key = { it.uuid }) { service ->
+                items(connection.services, key = GattService::uuid) { service ->
                     ServiceCard(service)
                 }
             }
@@ -129,14 +146,14 @@ private fun ConnectionHeader(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
     ) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            InfoRow("Status", state.name)
-            InfoRow("Identifier", device.id)
-            if (rssi != null) InfoRow("RSSI", "$rssi dBm")
-            if (mtu != null) InfoRow("MTU", "$mtu bytes")
-            InfoRow("Services", serviceCount.toString())
-            InfoRow("Characteristics", characteristicCount.toString())
+            InfoRow(stringResource(Res.string.status), state.name)
+            InfoRow(stringResource(Res.string.identifier), device.id)
+            if (rssi != null) InfoRow(stringResource(Res.string.rssi), stringResource(Res.string.dbm, rssi))
+            if (mtu != null) InfoRow(stringResource(Res.string.mtu), "$mtu bytes")
+            InfoRow(stringResource(Res.string.services), serviceCount.toString())
+            InfoRow(stringResource(Res.string.characteristics), characteristicCount.toString())
             if (device.manufacturerData != null) {
-                InfoRow("Manufacturer data", device.manufacturerData)
+                InfoRow(stringResource(Res.string.manufacturer_data), device.manufacturerData)
             }
             if (error != null) {
                 Surface(
@@ -182,7 +199,7 @@ private fun ServiceCard(service: GattService) {
     ) {
         Column(Modifier.padding(16.dp)) {
             Text(
-                service.name ?: GattNames.lookup(service.uuid) ?: "Service",
+                service.name ?: GattNames.lookup(service.uuid) ?: stringResource(Res.string.service),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
             )
@@ -204,7 +221,7 @@ private fun ServiceCard(service: GattService) {
 private fun CharacteristicRow(ch: GattCharacteristic) {
     Column {
         Text(
-            ch.name ?: GattNames.lookup(ch.uuid) ?: "Characteristic",
+            ch.name ?: GattNames.lookup(ch.uuid) ?: stringResource(Res.string.characteristic),
             style = MaterialTheme.typography.titleSmall,
         )
         Text(
@@ -214,21 +231,20 @@ private fun CharacteristicRow(ch: GattCharacteristic) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
-            "Properties: ${ch.properties.label()}",
+            stringResource(Res.string.properties, ch.properties.label()),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.primary,
         )
         if (ch.value != null) {
             Text(
-                "Value: ${ch.value}",
+                stringResource(Res.string.value, ch.value),
                 style = MaterialTheme.typography.bodySmall,
                 fontFamily = FontFamily.Monospace,
             )
         }
         ch.descriptors.forEach { d ->
             Text(
-                "• ${d.name ?: GattNames.lookup(d.uuid) ?: d.uuid}" +
-                    (d.value?.let { ": $it" } ?: ""),
+                "• ${d.name ?: GattNames.lookup(d.uuid) ?: d.uuid}" + (d.value?.let { ": $it" } ?: ""),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
