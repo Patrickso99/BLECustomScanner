@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothGattConnectionSettings
 import android.bluetooth.BluetoothGattService
 import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothProfile
@@ -325,7 +326,16 @@ class AndroidBleController(
             return
         }
         _connection.value = DeviceConnection(device = device, state = ConnectionState.Connecting)
-        gatt = remote.connectGatt(appContext, false, gattCallback, BluetoothDevice.TRANSPORT_LE)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN) {
+            val settings = BluetoothGattConnectionSettings.Builder()
+                .setAutoConnectEnabled(false)
+                .setTransport(BluetoothDevice.TRANSPORT_LE)
+                .build()
+            gatt = remote.connectGatt(settings, appContext.mainExecutor, gattCallback)
+        } else {
+            @Suppress("DEPRECATION")
+            gatt = remote.connectGatt(appContext, false, gattCallback, BluetoothDevice.TRANSPORT_LE)
+        }
     }
 
     @SuppressLint("MissingPermission")
