@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -20,7 +22,9 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -75,6 +79,19 @@ fun ScannerScreen(
 ) {
     val tab = state.selectedTab
     val isReady = state.arePermissionGranted && state.bluetoothState == BluetoothState.Ready
+    val pagerState = rememberPagerState(initialPage = tab.ordinal) { ScannerTab.entries.size }
+
+    LaunchedEffect(tab) {
+        if (pagerState.currentPage != tab.ordinal) {
+            pagerState.animateScrollToPage(tab.ordinal)
+        }
+    }
+
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }.collect { page ->
+            onAction(ScannerAction.SelectTab(ScannerTab.entries[page]))
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -130,10 +147,10 @@ fun ScannerScreen(
                 onEnableBluetooth = { onAction(ScannerAction.EnableBluetooth) },
             )
 
-            PrimaryTabRow(selectedTabIndex = tab.ordinal) {
+            PrimaryTabRow(selectedTabIndex = pagerState.currentPage) {
                 ScannerTab.entries.forEach { entry ->
                     Tab(
-                        selected = tab == entry,
+                        selected = pagerState.currentPage == entry.ordinal,
                         onClick = { onAction(ScannerAction.SelectTab(entry)) },
                         text = {
                             val count = when (entry) {
@@ -150,7 +167,13 @@ fun ScannerScreen(
                 }
             }
 
-            val devices = if (tab == ScannerTab.Found) state.scannedDevices else state.pairedDevices
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxSize().weight(1f),
+            ) { page ->
+                val currentTab = ScannerTab.entries[page]
+                val devices = if (currentTab == ScannerTab.Found) state.scannedDevices else state.pairedDevices
+
                 if (devices.isEmpty()) {
                     EmptyState(
                         text = when {
