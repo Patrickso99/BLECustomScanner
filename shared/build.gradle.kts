@@ -59,6 +59,10 @@ kotlin {
             implementation(libs.navigation.compose)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kermit)
+            implementation(libs.moko.permissions)
+            implementation(libs.moko.permissions.bluetooth)
+            implementation(libs.moko.permissions.location)
+            implementation(libs.moko.permissions.compose)
 
             // Koin
             implementation(libs.koin.core)

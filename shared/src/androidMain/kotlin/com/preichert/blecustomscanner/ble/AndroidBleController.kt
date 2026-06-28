@@ -24,6 +24,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.preichert.blecustomscanner.repository.BleDeviceRepository
+import dev.icerock.moko.permissions.DeniedAlwaysException
+import dev.icerock.moko.permissions.DeniedException
+import dev.icerock.moko.permissions.Permission
+import dev.icerock.moko.permissions.PermissionsController
+import dev.icerock.moko.permissions.bluetooth.BLUETOOTH_CONNECT
+import dev.icerock.moko.permissions.bluetooth.BLUETOOTH_SCAN
+import dev.icerock.moko.permissions.location.LOCATION
 import co.touchlab.kermit.Logger
 import com.preichert.blecustomscanner.logger.withTag
 import kotlinx.coroutines.CoroutineScope
@@ -44,6 +51,7 @@ import androidx.core.util.isNotEmpty
  */
 class AndroidBleController(
     context: Context,
+    private val permissionsController: PermissionsController,
     private val repository: BleDeviceRepository,
 ) : BleController {
 
@@ -84,19 +92,12 @@ class AndroidBleController(
     // region launchers & receivers ------------------------------------------------
 
     private var activity: ComponentActivity? = null
-    private var permissionLauncher: ActivityResultLauncher<Array<String>>? = null
     private var enableBtLauncher: ActivityResultLauncher<Intent>? = null
     private var lifecycleObserver: DefaultLifecycleObserver? = null
 
     fun bind(activity: ComponentActivity) {
         this.activity = activity
-        permissionLauncher = activity.registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions(),
-        ) { result ->
-            _permissionGranted.value = result.values.all { it } && hasPermissions()
-            refreshAdapterState()
-            refreshPairedDevices()
-        }
+        permissionsController.bind(activity)
 
         enableBtLauncher = activity.registerForActivityResult(
             ActivityResultContracts.StartActivityForResult(),
@@ -120,7 +121,6 @@ class AndroidBleController(
         lifecycleObserver?.let { activity?.lifecycle?.removeObserver(it) }
         lifecycleObserver = null
         activity = null
-        permissionLauncher = null
         enableBtLauncher = null
     }
 
@@ -178,31 +178,29 @@ class AndroidBleController(
 
     override fun requestPermissions() {
         logger.d("Requesting permissions")
-        if (hasPermissions()) {
-            _permissionGranted.value = true
-            arePermissionsAlreadyAsked = true
-            refreshAdapterState()
-            refreshPairedDevices()
-        } else {
-            val currentActivity = activity
-            val showRationale = currentActivity != null && requiredPermissions().any {
-                currentActivity.shouldShowRequestPermissionRationale(it)
-            }
-            if (!showRationale && arePermissionsAlreadyAsked) {
-                openSettings()
+        scope.launch {
+            val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                listOf(Permission.BLUETOOTH_SCAN, Permission.BLUETOOTH_CONNECT)
             } else {
+                listOf(Permission.LOCATION)
+            }
+            try {
+                for (perm in permissions) permissionsController.providePermission(perm)
                 arePermissionsAlreadyAsked = true
-                permissionLauncher?.launch(requiredPermissions())
+                _permissionGranted.value = true
+                refreshAdapterState()
+                refreshPairedDevices()
+            } catch (_: DeniedAlwaysException) {
+                arePermissionsAlreadyAsked = true
+                _permissionGranted.value = false
+                refreshAdapterState()
+                permissionsController.openAppSettings()
+            } catch (_: DeniedException) {
+                arePermissionsAlreadyAsked = true
+                _permissionGranted.value = false
+                refreshAdapterState()
             }
         }
-    }
-
-    private fun openSettings() {
-        val intent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-            data = android.net.Uri.fromParts("package", appContext.packageName, null)
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
-        appContext.startActivity(intent)
     }
 
     @SuppressLint("MissingPermission")
