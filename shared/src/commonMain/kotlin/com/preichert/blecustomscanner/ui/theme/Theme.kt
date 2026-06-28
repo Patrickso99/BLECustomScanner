@@ -40,11 +40,15 @@ private val DarkColors = darkColorScheme(
  */
 @Composable
 fun BleScannerTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    isDarkMode: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
+    PlatformThemeEffect(isDarkMode)
     MaterialTheme(
-        colorScheme = if (darkTheme) DarkColors else LightColors,
+        colorScheme = if (isDarkMode) DarkColors else LightColors,
         content = content,
     )
 }
+
+@Composable
+expect fun PlatformThemeEffect(isDarkMode: Boolean)

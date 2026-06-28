@@ -32,7 +32,7 @@ fun App() {
     val systemDark = isSystemInDarkTheme()
     var isDarkMode by remember { mutableStateOf(systemDark) }
 
-    BleScannerTheme(darkTheme = isDarkMode) {
+    BleScannerTheme(isDarkMode = isDarkMode) {
         val navController = rememberNavController()
 
         NavHost(

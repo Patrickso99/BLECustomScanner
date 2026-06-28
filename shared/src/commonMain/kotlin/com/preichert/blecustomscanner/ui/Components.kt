@@ -111,7 +111,7 @@ fun StatusBanner(
 @Preview
 @Composable
 fun StatusBannerPreview() {
-    BleScannerTheme(darkTheme = false) {
+    BleScannerTheme(isDarkMode = false) {
         StatusBanner(
             bluetoothState = BluetoothState.PoweredOff,
             arePermissionGranted = true,
@@ -124,7 +124,7 @@ fun StatusBannerPreview() {
 @Preview
 @Composable
 fun StatusBannerDarkPreview() {
-    BleScannerTheme(darkTheme = true) {
+    BleScannerTheme(isDarkMode = true) {
         StatusBanner(
             bluetoothState = BluetoothState.PoweredOff,
             arePermissionGranted = true,
@@ -152,7 +152,7 @@ fun EmptyState(text: String, modifier: Modifier = Modifier) {
 @Preview
 @Composable
 fun EmptyStatePreview() {
-    BleScannerTheme(darkTheme = false) {
+    BleScannerTheme(isDarkMode = false) {
         EmptyState(text = "No devices found")
     }
 }
@@ -160,7 +160,7 @@ fun EmptyStatePreview() {
 @Preview
 @Composable
 fun EmptyStateDarkPreview() {
-    BleScannerTheme(darkTheme = true) {
+    BleScannerTheme(isDarkMode = true) {
         EmptyState(text = "No devices found")
     }
 }
@@ -219,7 +219,7 @@ fun DeviceRow(
 @Preview
 @Composable
 fun DeviceRowPreview() {
-    BleScannerTheme(darkTheme = false) {
+    BleScannerTheme(isDarkMode = false) {
         DeviceRow(
             device = BleDevice(
                 id = "00:11:22:33:44:55",
@@ -235,7 +235,7 @@ fun DeviceRowPreview() {
 @Preview
 @Composable
 fun DeviceRowDarkPreview() {
-    BleScannerTheme(darkTheme = true) {
+    BleScannerTheme(isDarkMode = true) {
         DeviceRow(
             device = BleDevice(
                 id = "00:11:22:33:44:55",

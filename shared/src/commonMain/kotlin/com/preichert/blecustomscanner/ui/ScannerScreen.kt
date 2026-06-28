@@ -176,7 +176,7 @@ fun ScannerScreen(
 @Preview
 @Composable
 fun ScannerScreenPreview() {
-    BleScannerTheme(darkTheme = false) {
+    BleScannerTheme(isDarkMode = false) {
         ScannerScreen(
             state = ScannerState(
                 bluetoothState = BluetoothState.Ready,
@@ -197,7 +197,7 @@ fun ScannerScreenPreview() {
 @Preview
 @Composable
 fun ScannerScreenDarkPreview() {
-    BleScannerTheme(darkTheme = true) {
+    BleScannerTheme(isDarkMode = true) {
         ScannerScreen(
             state = ScannerState(
                 bluetoothState = BluetoothState.Ready,
@@ -218,7 +218,7 @@ fun ScannerScreenDarkPreview() {
 @Preview
 @Composable
 fun ScannerScreenEmptyPreview() {
-    BleScannerTheme(darkTheme = false) {
+    BleScannerTheme(isDarkMode = false) {
         ScannerScreen(
             state = ScannerState(
                 bluetoothState = BluetoothState.PoweredOff,
@@ -234,7 +234,7 @@ fun ScannerScreenEmptyPreview() {
 @Preview
 @Composable
 fun ScannerScreenEmptyDarkPreview() {
-    BleScannerTheme(darkTheme = true) {
+    BleScannerTheme(isDarkMode = true) {
         ScannerScreen(
             state = ScannerState(
                 bluetoothState = BluetoothState.PoweredOff,

@@ -255,7 +255,7 @@ private fun CharacteristicRow(ch: GattCharacteristic) {
 @Preview
 @Composable
 fun DeviceDetailScreenPreview() {
-    BleScannerTheme(darkTheme = false) {
+    BleScannerTheme(isDarkMode = false) {
         DeviceDetailScreen(
             state = DeviceDetailState(
                 device = BleDevice(id = "00:11:22:33:44:55", name = "Test Device", rssi = -55),
@@ -286,7 +286,7 @@ fun DeviceDetailScreenPreview() {
 @Preview
 @Composable
 fun DeviceDetailScreenDarkPreview() {
-    BleScannerTheme(darkTheme = true) {
+    BleScannerTheme(isDarkMode = true) {
         DeviceDetailScreen(
             state = DeviceDetailState(
                 device = BleDevice(id = "00:11:22:33:44:55", name = "Test Device", rssi = -55),
