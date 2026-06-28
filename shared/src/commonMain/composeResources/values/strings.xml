@@ -5,7 +5,8 @@
     <string name="scan">Scan</string>
     <string name="stop">Stop</string>
     <string name="scanning">Scanning for devices…</string>
-    <string name="no_devices_yet">No devices yet. Tap Scan to start.</string>
+    <string name="no_devices_yet">Tap Scan to start searching for devices.</string>
+    <string name="no_devices_found">No devices found nearby.</string>
     <string name="no_paired_devices">No paired devices.</string>
     <string name="bt_not_ready">Bluetooth not ready</string>
     <string name="bt_denied">Bluetooth access was denied. Enable it in Settings to continue.</string>

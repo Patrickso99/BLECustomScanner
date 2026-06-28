@@ -29,6 +29,7 @@ data class ScannerState(
     val scannedDevices: List<BleDevice> = emptyList(),
     val pairedDevices: List<BleDevice> = emptyList(),
     val selectedTab: ScannerTab = ScannerTab.Found,
+    val hasStartedScanning: Boolean = false,
 )
 
 sealed interface ScannerAction {
@@ -90,7 +91,10 @@ class ScannerViewModel(
 
     fun onAction(action: ScannerAction) {
         when (action) {
-            ScannerAction.StartScan -> controller.startScan()
+            ScannerAction.StartScan -> {
+                _state.update { it.copy(hasStartedScanning = true) }
+                controller.startScan()
+            }
             ScannerAction.StopScan -> controller.stopScan()
             ScannerAction.RequestPermission -> controller.requestPermissions()
             ScannerAction.EnableBluetooth -> controller.requestEnableBluetooth()

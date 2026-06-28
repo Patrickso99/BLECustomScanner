@@ -5,7 +5,8 @@
     <string name="scan">Scansiona</string>
     <string name="stop">Ferma</string>
     <string name="scanning">Ricerca dispositivi in corso…</string>
-    <string name="no_devices_yet">Nessun dispositivo trovato. Tocca Scansiona per iniziare.</string>
+    <string name="no_devices_yet">Tocca Scansiona per iniziare la ricerca di dispositivi.</string>
+    <string name="no_devices_found">Nessun dispositivo trovato nelle vicinanze.</string>
     <string name="no_paired_devices">Nessun dispositivo associato.</string>
     <string name="bt_not_ready">Bluetooth non pronto</string>
     <string name="bt_denied">L\'accesso al Bluetooth è stato negato. Abilitalo nelle Impostazioni per continuare.</string>

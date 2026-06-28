@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import blecustomscanner.shared.generated.resources.Res
 import blecustomscanner.shared.generated.resources.app_name
 import blecustomscanner.shared.generated.resources.bt_not_ready
+import blecustomscanner.shared.generated.resources.no_devices_found
 import blecustomscanner.shared.generated.resources.no_devices_yet
 import blecustomscanner.shared.generated.resources.no_paired_devices
 import blecustomscanner.shared.generated.resources.scan
@@ -150,22 +151,27 @@ fun ScannerScreen(
             }
 
             val devices = if (tab == ScannerTab.Found) state.scannedDevices else state.pairedDevices
-            if (devices.isEmpty()) {
-                EmptyState(
-                    text = when {
-                        !isReady -> stringResource(Res.string.bt_not_ready)
-                        tab == ScannerTab.Found && state.isScanning -> stringResource(Res.string.scanning)
-                        tab == ScannerTab.Found -> stringResource(Res.string.no_devices_yet)
-                        else -> stringResource(Res.string.no_paired_devices)
-                    },
-                )
-            } else {
-                LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
-                    items(devices, key = BleDevice::id) { device ->
-                        DeviceRow(
-                            device = device,
-                            onClick = { onAction(ScannerAction.NavigateToDevice(device)) },
-                        )
+                if (devices.isEmpty()) {
+                    EmptyState(
+                        text = when {
+                            !isReady -> stringResource(Res.string.bt_not_ready)
+                            currentTab == ScannerTab.Found && state.isScanning -> stringResource(Res.string.scanning)
+                            currentTab == ScannerTab.Found && !state.hasStartedScanning -> stringResource(Res.string.no_devices_yet)
+                            currentTab == ScannerTab.Found -> stringResource(Res.string.no_devices_found)
+                            else -> stringResource(Res.string.no_paired_devices)
+                        },
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(vertical = 8.dp)
+                    ) {
+                        items(devices, key = BleDevice::id) { device ->
+                            DeviceRow(
+                                device = device,
+                                onClick = { onAction(ScannerAction.NavigateToDevice(device)) },
+                            )
+                        }
                     }
                 }
             }

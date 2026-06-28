@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import blecustomscanner.shared.generated.resources.Res
@@ -138,13 +139,14 @@ fun StatusBannerDarkPreview() {
 @Composable
 fun EmptyState(text: String, modifier: Modifier = Modifier) {
     Box(
-        modifier.fillMaxSize(),
+        modifier.fillMaxSize().padding(horizontal = 32.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text,
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
         )
     }
 }
