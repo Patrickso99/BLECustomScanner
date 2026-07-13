@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.buildkonfig)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidxRoom)
     alias(libs.plugins.kotlinxSerialization)
@@ -12,6 +13,16 @@ plugins {
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+buildkonfig {
+    packageName = "com.preichert.blecustomscanner"
+    objectName = "BuildKonfig"
+
+    val versionName = libs.versions.app.versionName.get()
+    defaultConfigs {
+        buildConfigField(com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING, "APP_NAME", "BLE Custom Scanner ($versionName)")
+    }
 }
 
 kotlin {

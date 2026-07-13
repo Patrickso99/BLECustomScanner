@@ -27,14 +27,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.preichert.blecustomscanner.ble.BleDevice
-import com.preichert.blecustomscanner.ble.BluetoothState
-import com.preichert.blecustomscanner.ui.theme.BleScannerTheme
-import androidx.compose.ui.tooling.preview.Preview
 import blecustomscanner.shared.generated.resources.Res
-import blecustomscanner.shared.generated.resources.app_name
 import blecustomscanner.shared.generated.resources.bt_not_ready
 import blecustomscanner.shared.generated.resources.no_devices_found
 import blecustomscanner.shared.generated.resources.no_devices_yet
@@ -44,6 +40,10 @@ import blecustomscanner.shared.generated.resources.scanning
 import blecustomscanner.shared.generated.resources.stop
 import blecustomscanner.shared.generated.resources.tab_found
 import blecustomscanner.shared.generated.resources.tab_paired
+import com.preichert.blecustomscanner.BuildKonfig
+import com.preichert.blecustomscanner.ble.BleDevice
+import com.preichert.blecustomscanner.ble.BluetoothState
+import com.preichert.blecustomscanner.ui.theme.BleScannerTheme
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -96,7 +96,7 @@ fun ScannerScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(Res.string.app_name)) },
+                title = { Text(BuildKonfig.APP_NAME) },
                 actions = {
                     IconButton(onClick = onToggleTheme) {
                         Text(
